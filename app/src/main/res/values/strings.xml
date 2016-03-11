@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">RetroFitApp</string>
+    <string name="tv_results_hint">Results Go Here</string>
+    <string name="btn_request_text">Request</string>
+    <string name="et_name_hint">Write your query</string>
+</resources>
