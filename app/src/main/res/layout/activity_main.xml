@@ -14,10 +14,18 @@
         android:orientation="vertical"
         tools:context="com.mobileappsco.training.retrofitapp.MainActivity">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_dummy"
+            android:layout_weight="1"
+            android:text="simpsons characters" />
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_name"
+            android:text="simpsons characters"
             android:hint="@string/et_name_hint"/>
 
         <Button
@@ -36,7 +44,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/rv"
+            android:id="@+id/recycler_view"
             />
 
     </LinearLayout>

@@ -1,17 +1,24 @@
 package com.mobileappsco.training.retrofitapp;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobileappsco.training.retrofitapp.entities.RelatedTopic;
 import com.mobileappsco.training.retrofitapp.entities.Result;
 import com.mobileappsco.training.retrofitapp.retrofit.RetroFitInterface;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -21,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tvResults;
     EditText etName;
+    RecyclerView recyclerView;
+    LinearLayoutManager llmanager;
+    List<RelatedTopic> relatedTopicsList;
+    RecyclerViewAdapter rvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +39,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tvResults = (TextView) findViewById(R.id.tv_results);
         etName = (EditText) findViewById(R.id.et_name);
+        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        llmanager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llmanager);
+        relatedTopicsList = new ArrayList<>();
+        relatedTopicsList.add(new RelatedTopic());
+        rvAdapter = new RecyclerViewAdapter(MainActivity.this, relatedTopicsList);
+        recyclerView.setAdapter(rvAdapter);
+    }
+
+    public void removeItem(View v) {
+
     }
 
     public void requestRetroFit(View view) {
@@ -56,12 +79,33 @@ public class MainActivity extends AppCompatActivity {
                 if (results==null) {
                     Toast.makeText(MainActivity.this, "No results found", Toast.LENGTH_SHORT).show();
                 } else {
-                    for (RelatedTopic result : results.getRelatedTopics()) {
-                        tvResults.setText(tvResults.getText() + result.getText() + "\n");
+                    for (RelatedTopic relatedTopic : results.getRelatedTopics()) {
+                        //tvResults.setText(tvResults.getText() + relatedTopic.getText() + "\n");
+                        //relatedTopicsList.add(relatedTopic);
+                        rvAdapter.addRelatedTopic(relatedTopic);
+                        rvAdapter.notifyItemInserted(rvAdapter.getItemCount()-1);
                     }
+                    rvAdapter.removeDummy();
+                    relatedTopicsList.remove(0);
+
+                    //rvAdapter = new RecyclerViewAdapter(MainActivity.this, relatedTopicsList);
+                    //recyclerView.setAdapter(rvAdapter);
+                    //rvAdapter.updateList(relatedTopicsList);
+                    rvAdapter.notifyDataSetChanged();
+                    recyclerView.addOnItemTouchListener(
+                            new RecyclerItemClickListener(MainActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    // TODO Handle item click
+                                    Toast.makeText(MainActivity.this, "click en :"+position, Toast.LENGTH_SHORT).show();
+                                    relatedTopicsList.remove(position);
+                                    rvAdapter.notifyItemRemoved(position);
+                                }
+                            })
+                    );
                 }
             } catch (Exception e) {
-                Log.e("MYTAG", e.getMessage());
+                Log.e("MYTAG", "ERROR for: " +e.getMessage());
             }
         }
 
